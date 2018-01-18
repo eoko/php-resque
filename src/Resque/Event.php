@@ -63,6 +63,9 @@ class Event
     const PLUGIN_REGISTERED   = 301;
     const PLUGIN_UNREGISTERED = 302;
 
+    // Queue event constants
+    const QUEUE_INSTANCE     = 400;
+
     /**
      * @var array containing all registered callbacks, indexed by event name
      */

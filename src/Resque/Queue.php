@@ -32,6 +32,16 @@ class Queue
     protected $default;
 
     /**
+     * @var string The command used to get the next job off of the current queue
+     */
+    protected $pop_command = 'lpop';
+
+    /**
+     * @var string The blocking command to get the next job off of the current queue
+     */
+    protected $blocking_pop_command = 'blpop';
+
+    /**
      * Get the Queue key
      *
      * @param  Queue|null  $queue  the worker to get the key for
@@ -57,6 +67,8 @@ class Queue
         $this->redis = Redis::instance();
 
         $this->default = $default ?: \Resque::getConfig('default.jobs.queue', 'default');
+
+        Event::fire(Event::QUEUE_INSTANCE, $this);
     }
 
     /**
@@ -135,11 +147,13 @@ class Queue
         }
 
         if ($blocking) {
-            list($queue, $payload) = $this->redis->blpop($queues, $timeout);
+            $pop = $this->blocking_pop_command;
+            list($queue, $payload) = $this->redis->$pop($queues, $timeout);
             $queue = $this->redis->removeNamespace($queue);
         } else {
+            $pop = $this->pop_command;
             foreach ($queues as $queue) {
-                if ($payload = $this->redis->lpop($queue)) {
+                if ($payload = $this->redis->$pop($queue)) {
                     break;
                 }
             }

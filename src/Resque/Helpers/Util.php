@@ -39,7 +39,7 @@ class Util
             $units = array('B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB');
             $mod = 1024;
 
-            // SI prefixes (decimal)
+        // SI prefixes (decimal)
         } else {
             $units = array('B', 'kB', 'MB', 'GB', 'TB', 'PB');
             $mod = 1000;
